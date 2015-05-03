@@ -4,7 +4,8 @@
 
 Registers: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf
 
-SPI: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=259
+ -> SPI: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=259
+ -> GPIO: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=106
 
 CPU: http://www.st.com/web/en/resource/technical/document/programming_manual/CD00161709.pdf
 
