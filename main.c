@@ -93,8 +93,7 @@ inline void uart_write (char c) {
 //
 //  Timer 2 Overflow handler.
 //
-void irq_timer2(void) __interrupt(IRQ_TIM2)
-{
+void irq_timer2 (void) __interrupt(IRQ_TIM2) {
 	gpio_write(0, gpio_read(0));
 	//  Reset the interrupt otherwise it will fire again straight away.
 	TIM2_SR1->UIF = 0;
@@ -106,11 +105,16 @@ void irq_timer2(void) __interrupt(IRQ_TIM2)
     uart_write('\n');
 }
 
+uint16_t clock (void) {
+	uint8_t h = TIM1_CNTRH;
+	uint8_t l = TIM1_CNTRL;
+	return((uint16_t)(h) << 8 | l);
+}
+
 //
 //  Main program loop.
 //
-void main (void)
-{
+void main (void) {
     __disable_interrupt();
 	CLK_CKDIVR = 0x00; // Set the frequency to 16 MHz
 	// CLK_PCKENR2 |= 0x02; // Enable clock to timer
