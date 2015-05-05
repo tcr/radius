@@ -17,16 +17,16 @@ typedef struct {
 #define PORT_D      ((volatile port_t *) (0x5000 + 3*0x5))
 #define PORT_E      ((volatile port_t *) (0x5000 + 4*0x5))
 
-#define CLK_DIVR	(*(volatile uint8_t *)0x50c6)
-#define CLK_PCKENR1	(*(volatile uint8_t *)0x50c7)
-#define CLK_PCKENR2	(*(volatile uint8_t *)0x50ca)
+#define CLK_CKDIVR	(*IO_PTR(0x50c6))
+#define CLK_PCKENR1	(*IO_PTR(0x50c7))
+#define CLK_PCKENR2	(*IO_PTR(0x50ca))
 
-#define USART1_SR	(*(volatile uint8_t *)0x5230)
-#define USART1_DR	(*(volatile uint8_t *)0x5231)
-#define USART1_BRR1	(*(volatile uint8_t *)0x5232)
-#define USART1_BRR2	(*(volatile uint8_t *)0x5233)
-#define USART1_CR2	(*(volatile uint8_t *)0x5235)
-#define USART1_CR3	(*(volatile uint8_t *)0x5236)
+#define USART1_SR	(*IO_PTR(0x5230))
+#define USART1_DR	(*IO_PTR(0x5231))
+#define USART1_BRR1	(*IO_PTR(0x5232))
+#define USART1_BRR2	(*IO_PTR(0x5233))
+#define USART1_CR2	(*IO_PTR(0x5235))
+#define USART1_CR3	(*IO_PTR(0x5236))
 
 #define TIM1_CR1	(*IO_PTR(0x5250))
 #define TIM1_CNTRH	(*IO_PTR(0x525e))
@@ -120,3 +120,27 @@ typedef enum {
 	IRQ_TIM4,
 	IRQ_FLASH = 24
 } irq_t;
+
+inline void __disable_interrupt(void) {
+	__asm
+	sim
+	__endasm;
+}
+
+inline void __enable_interrupt(void) {
+	__asm
+	rim
+	__endasm;
+}
+
+inline void __wait_for_interrupt(void) {
+	__asm
+	wfi
+	__endasm;
+}
+
+inline void __nop(void) {
+	__asm
+	nop
+	__endasm;
+}

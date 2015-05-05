@@ -8,9 +8,9 @@ inline void gpio_input (uint8_t pin) {
 	PORT_D->DDR = value & ~(1 << pin);
 }
 
-inline void gpio_output (uint8_t pin) {
-	uint8_t value = PORT_D->DDR;
-	PORT_D->DDR = value | (1 << pin);
+inline void gpio_output (volatile port_t * port, uint8_t pin) {
+	uint8_t value = port->DDR;
+	port->DDR = value | (1 << pin);
 }
 
 inline uint8_t gpio_read (uint8_t pin) {
@@ -24,19 +24,9 @@ inline void gpio_write (uint8_t pin, uint8_t val) {
 }
 
 //
-//  Timer 2 Overflow handler.
-//
-void irq_timer2(void) __interrupt(IRQ_TIM2)
-{
-	gpio_write(0, gpio_read(0));
-	//  Reset the interrupt otherwise it will fire again straight away.
-	TIM2_SR1->UIF = 0;
-}
-
-//
 //  Reset Timer 2 to a known state.
 //
-void InitialiseTimer2()
+void init_timer2()
 {
     TIM2_CR1_REG = 0;               // Turn everything TIM2 related off.
     TIM2_IER_REG = 0;
@@ -65,7 +55,7 @@ void InitialiseTimer2()
 //
 //  Setup Timer 2 to generate a 20 Hz interrupt based upon a 16 MHz timer.
 //
-void SetupTimer2()
+void config_timer2()
 {
     TIM2_PSCR = 0x03;       //  Prescaler = 8.
     TIM2_ARRH = (25000 >> 8);       //  High byte of 50,000.
@@ -75,29 +65,45 @@ void SetupTimer2()
 }
 
 
-void SetupOutputPorts()
+void config_ports (void) {
+	gpio_output(PORT_D, 0);
+	gpio_output(PORT_D, 5);
+	gpio_output(PORT_D, 6);
+}
+
+inline void config_uart (void) {
+	USART1_CR2 = USART_CR2_TEN; // Allow TX & RX
+	USART1_CR3 &= ~(USART_CR3_STOP1 | USART_CR3_STOP2); // 1 stop bit
+	USART1_BRR2 = 0x03;
+	USART1_BRR1 = 0x68; // 9600 baud
+}
+
+
+inline void uart_wait () {
+	// gpio_write(0, 1);
+	while(!(USART1_SR & USART_SR_TXE));
+	// gpio_write(0, 0);
+}
+
+inline void uart_write (char c) {
+	uart_wait();
+	USART1_DR = c;
+}
+
+//
+//  Timer 2 Overflow handler.
+//
+void irq_timer2(void) __interrupt(IRQ_TIM2)
 {
-	gpio_output(0);
+	gpio_write(0, gpio_read(0));
+	//  Reset the interrupt otherwise it will fire again straight away.
+	TIM2_SR1->UIF = 0;
 
-}
-
-
-inline void __disable_interrupt(void) {
-	__asm
-	sim
-	__endasm;
-}
-
-inline void __enable_interrupt(void) {
-	__asm
-	rim
-	__endasm;
-}
-
-inline void __wait_for_interrupt(void) {
-	__asm
-	wfi
-	__endasm;
+    uart_write('T');
+    uart_write('a');
+    uart_write('g');
+    uart_write('\r');
+    uart_write('\n');
 }
 
 //
@@ -106,35 +112,17 @@ inline void __wait_for_interrupt(void) {
 void main (void)
 {
     __disable_interrupt();
-    SetupOutputPorts();
-    InitialiseTimer2();
-    SetupTimer2();
+	CLK_CKDIVR = 0x00; // Set the frequency to 16 MHz
+	// CLK_PCKENR2 |= 0x02; // Enable clock to timer
+	CLK_PCKENR1 = 0xFF; // Enable peripherals
+
+    init_timer2();
+    config_ports();
+    config_timer2();
+    config_uart();
     __enable_interrupt();
-    while (1)
-    {
+
+    while (1) {
         __wait_for_interrupt();
     }
 }
-
-
-// void main (void)
-// {
-// 	uint32_t i;
-
-// 	gpio_output(0);
-
-// 	while (1) {
-// 		gpio_write(0, 0);
-// 		for (i = 0; i < 1e4; i++) {
-// 			__asm
-// 			nop
-// 			__endasm;
-// 		}
-// 		gpio_write(0, 1);
-// 		for (i = 0; i < 1e4; i++) {
-// 			__asm
-// 			nop
-// 			__endasm;
-// 		}
-// 	}
-// }
