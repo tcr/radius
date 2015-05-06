@@ -1,3 +1,6 @@
+#ifndef __STM8S_H__
+#define __STM8S_H__
+
 #define IO_PTR(x)	((volatile uint8_t *)(x))
 #define IO_TYPE(T, x)	((volatile T *)(x))
 
@@ -25,8 +28,34 @@ typedef struct {
 #define USART1_DR	(*IO_PTR(0x5231))
 #define USART1_BRR1	(*IO_PTR(0x5232))
 #define USART1_BRR2	(*IO_PTR(0x5233))
-#define USART1_CR2	(*IO_PTR(0x5235))
-#define USART1_CR3	(*IO_PTR(0x5236))
+
+typedef struct {
+	uint8_t SBK:1;
+	uint8_t RWU:1;
+	uint8_t REN:1;
+	uint8_t TEN:1;
+	uint8_t ILIEN:1;
+	uint8_t RIEN:1;
+	uint8_t TCIEN:1;
+	uint8_t TIEN:1;
+} UART1_CR2_t;
+#define UART1_CR2	IO_TYPE(UART1_CR2_t, 0x5235)
+#define UART1_CR2_REG	(*IO_PTR(0x5235))
+
+typedef struct {
+	uint8_t LINEN:1;
+	uint8_t STOP:2;
+	uint8_t CLKEN:1;
+	uint8_t CPOL:1;
+	uint8_t CPHA:1;
+	uint8_t LBCL:1;
+} UART1_CR3_t;
+#define UART1_CR3	IO_TYPE(UART1_CR2_t, 0x5236)
+#define UART1_CR3_REG	(*IO_PTR(0x5236))
+
+#define UART1_CR2_STOP_ONE 0
+#define UART1_CR2_STOP_TWO 2
+#define UART1_CR2_STOP_ONE_AND_HALF 3
 
 #define TIM1_CR1	(*IO_PTR(0x5250))
 #define TIM1_CNTRH	(*IO_PTR(0x525e))
@@ -89,6 +118,7 @@ typedef struct {
 #define USART_CR3_STOP2 (1 << 5)
 #define USART_CR3_STOP1 (1 << 4)
 #define USART_SR_TXE (1 << 7)
+#define USART_SR_RXNE (1 << 5)
 
 #define SPI_BLOCK   (*(volatile uint8_t *)0x5200)
 #define SPI_SR      (*((&SPI_BLOCK) + 0x3))
@@ -144,3 +174,10 @@ inline void __nop(void) {
 	nop
 	__endasm;
 }
+
+#define assign_reg(X, ...) do { \
+    static const X ## _t stru = __VA_ARGS__; \
+    X ## _REG = *((volatile uint8_t *) &stru); \
+} while (0)
+
+#endif
