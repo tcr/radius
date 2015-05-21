@@ -37,15 +37,18 @@ USB:
 
 Reference manual: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf
 
-* SPI: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=259
-* GPIO: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=106
+ * SPI: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=259
+ * I2C: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=285
+ * GPIO: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=106
 
 CPU reference: http://www.st.com/web/en/resource/technical/document/programming_manual/CD00161709.pdf
 
 Product Datasheet: http://www.st.com/web/en/resource/technical/document/datasheet/DM00024550.pdf
 
-* Memory map: http://www.st.com/web/en/resource/technical/document/datasheet/DM00024550.pdf#page=32
-* Pin map: http://www.st.com/web/en/resource/technical/document/datasheet/DM00024550.pdf#page=22
+ * Memory map: http://www.st.com/web/en/resource/technical/document/datasheet/DM00024550.pdf#page=32
+ * Pin map: http://www.st.com/web/en/resource/technical/document/datasheet/DM00024550.pdf#page=22
+
+ Errata: http://postar.sino-star.com/public/uploads/20120214161049_871.pdf
 
 ## tools
 

@@ -79,7 +79,14 @@ inline uint16_t read_timer1 (void) {
 inline void config_ports (void) {
 	gpio_output(PORT_D, 0);
 	gpio_output(PORT_D, 5);
+    // gpio_output(PORT_B, 5);
+    // gpio_output(PORT_B, 4);
+
 	gpio_input(PORT_D, 6);
+
+PORT_B->DDR &= 0xcf;
+PORT_B->CR1 &= 0xcf;
+PORT_B->CR2 &= 0xcf;
 }
 
 inline void uart1_2400 (void) {
