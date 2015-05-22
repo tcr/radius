@@ -15,6 +15,24 @@ sudo kextunload -b com.apple.driver.AppleUSBCardReader
 sudo kextunload -b com.apple.iokit.IOUSBMassStorageClass
 ```
 
+## pin mapping
+
+* GND
+* 3.3V
+* SCL - PB4
+* SDA - PB5
+* SCK - PC5
+* MISO - PC7
+* MOSI - PC6
+* TXD - PD2
+* RXD - PD0
+* G3 - PD1
+
+USB:
+
+* TXD - PD6
+* RXD - PD5
+
 ## docs
 
 Reference manual: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf
@@ -27,6 +45,7 @@ CPU reference: http://www.st.com/web/en/resource/technical/document/programming_
 Product Datasheet: http://www.st.com/web/en/resource/technical/document/datasheet/DM00024550.pdf
 
 * Memory map: http://www.st.com/web/en/resource/technical/document/datasheet/DM00024550.pdf#page=32
+* Pin map: http://www.st.com/web/en/resource/technical/document/datasheet/DM00024550.pdf#page=22
 
 ## tools
 
