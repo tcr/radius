@@ -1,6 +1,8 @@
 MAX_ALLOCS_PER_NODE=3000
 SDCC=sdcc
 
+.PHONY: build clean test
+
 all: build build/tesseltag.ihx
 
 build:
@@ -17,3 +19,6 @@ clean:
 
 flash: build/tesseltag.ihx
 	stm8flash -c stlink -p stm8s003 -w ./build/tesseltag.ihx
+
+test:
+	node test.js

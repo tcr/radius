@@ -1,27 +1,42 @@
-# tag
+# radius
+
+## testing
+
+```
+make
+make flash
+make test
+```
+
+If OS X reports contention for your device:
+
+```
+sudo kextunload -b com.apple.driver.AppleUSBCardReader
+sudo kextunload -b com.apple.iokit.IOUSBMassStorageClass
+```
 
 ## docs
 
-Registers: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf
+Reference manual: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf
 
- -> SPI: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=259
- -> GPIO: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=106
+* SPI: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=259
+* GPIO: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=106
 
-CPU: http://www.st.com/web/en/resource/technical/document/programming_manual/CD00161709.pdf
+CPU reference: http://www.st.com/web/en/resource/technical/document/programming_manual/CD00161709.pdf
 
-datasheet: http://www.st.com/web/en/resource/technical/document/datasheet/DM00024550.pdf
+Product Datasheet: http://www.st.com/web/en/resource/technical/document/datasheet/DM00024550.pdf
 
-memory map: http://www.st.com/web/en/resource/technical/document/datasheet/DM00024550.pdf#page=32
+* Memory map: http://www.st.com/web/en/resource/technical/document/datasheet/DM00024550.pdf#page=32
 
 ## tools
 
 https://github.com/vdudouyt/stm8flash
 
-http://www.colecovision.eu/stm8/128-EVAL%20Dhrystone.shtml
-
 ```
 brew install sdcc
 ```
+
+http://www.colecovision.eu/stm8/128-EVAL%20Dhrystone.shtml
 
 ## license
 
