@@ -21,4 +21,4 @@ flash: build/tesseltag.ihx
 	stm8flash -c stlink -p stm8s003 -w ./build/tesseltag.ihx
 
 test:
-	node test.js
+	node test.js /dev/cu.wchusbserial1420

@@ -2,7 +2,7 @@ var SerialPort = require("serialport").SerialPort;
 var concat = require('concat-stream');
 var assert = require('assert');
 
-var sp = new SerialPort("/dev/tty.usbserial", {
+var sp = new SerialPort(process.argv[2], {
   baudrate: 19200
 }, false); // this is the openImmediately flag [default is true]
 
