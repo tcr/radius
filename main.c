@@ -107,25 +107,32 @@ void write_chars (char* to, uint8_t val) {
 
 volatile int doread = 0;
 
-void uart_timer (void) __interrupt(IRQ_UART1) {
-    volatile uint8_t a;
-    // return;
-        // gpio_write(0, 1);
+void uart_tx (void) __interrupt(IRQ_UART1) {
     if (uart_tx_complete()) {
-        // gpio_write(0, 1);
         if (pos < uartstr_len) {
             uart_write(uartstr[pos]);
             ++pos;
+        } else {
+            // UART1_CR2->TCIEN = 1;
+            gpio_write(0, 1);
+            // UART1_CR2->TIEN = 0; 
+            UART1_CR2->TCIEN = 0;
         }
     }
-    if (uart_tc_complete()) {
-        // gpio_write(0, 0);
-        // UART1_CR2->TEN = 0;
-        uart_write('!');
-        UART1_CR2->TEN = 0;
-    }
+    // if (UART1_CR2->TCIEN && uart_tc_complete()) {
+    //     UART1_CR2->TCIEN = 0;
+    //     UART1_CR2->TEN = 0;
+    // }
+}
+
+void uart_rx (void) __interrupt(IRQ_UART1_FULL) {
+    volatile uint8_t a;
+    // return;
+        // gpio_write(0, 1);
     if (uart_rx_available()) {
         a = USART1_DR;
+        doread = 1;
+        gpio_write(0, gpio_read(0));
     //     uart_write(uartstr[0]);
     //     uart_write(uartstr[1]);
     //     uart_write(uartstr[2]);
@@ -135,7 +142,6 @@ void uart_timer (void) __interrupt(IRQ_UART1) {
 
 
 void irq_timer2 (void) __interrupt(IRQ_TIM2) {
-    doread = 1;
     //  Reset the interrupt otherwise it will fire again straight away.
     TIM2_SR1->UIF = 0;
 }
@@ -169,25 +175,27 @@ void main (void) {
         __wait_for_interrupt();
 
         if (doread) {
-            gpio_write(0, gpio_read(0));
             // looper();
-
             doread = 0;
+            pos = 0;
+            UART1_CR2->TCIEN = 1;
+            // uart_write(uartstr[0]);
             // uart_write('!');
+            // gpio_write(0, gpio_read(0));
 
-            i2c_read_byte(0x1D, 0x0D);
-            while (i2c_read_byte_result(&regread)) {
-                __wait_for_interrupt();
-            }
+            // i2c_read_byte(0x1D, 0x0D);
+            // while (i2c_read_byte_result(&regread)) {
+            //     __wait_for_interrupt();
+            // }
 
-            if (regread == 0x2A) {
-                if (pos >= uartstr_len) {
-                    pos = 0;
-                    UART1_CR2->TEN = 1;
-                    // uart_write(uartstr[0]);
-                    // pos = 1;
-                }
-            }
+            // if (regread == 0x2A) {
+                // if (pos >= uartstr_len) {
+                //     pos = 1;
+                //     UART1_CR2->TEN = 1;
+                //     uart_write(uartstr[0]);
+                //     // pos = 1;
+                // }
+            // }
         }
 
         //     doread = 0;
