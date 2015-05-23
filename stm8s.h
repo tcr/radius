@@ -72,7 +72,6 @@ typedef struct {
 	uint8_t RESERVED0:3;
 	uint8_t ARPE:1;
 } tim2_cr1_t;
-
 #define TIM2_CR1	IO_TYPE(tim2_cr1_t, 0x5300)
 #define TIM2_CR1_REG	(*IO_PTR(0x5300))
 
@@ -82,7 +81,6 @@ typedef struct {
 	uint8_t CC2IE:1;
 	uint8_t CC3IE:1;
 } tim2_ier_t;
-
 #define TIM2_IER	IO_TYPE(tim2_ier_t, 0x5303)
 #define TIM2_IER_REG	(*IO_PTR(0x5303))
 
@@ -92,9 +90,9 @@ typedef struct {
 	uint8_t CC2IF:1;
 	uint8_t CC3IF:1;
 } tim2_sr1_t;
-
 #define TIM2_SR1	IO_TYPE(tim2_sr1_t, 0x5304)
 #define TIM2_SR1_REG	(*IO_PTR(0x5304))
+
 #define TIM2_SR2	(*IO_PTR(0x5305))
 #define TIM2_EGR	(*IO_PTR(0x5306))
 #define TIM2_CCMR1	(*IO_PTR(0x5307))
@@ -118,10 +116,26 @@ typedef struct {
 #define USART_CR3_STOP2 (1 << 5)
 #define USART_CR3_STOP1 (1 << 4)
 #define USART_SR_TXE (1 << 7)
+#define USART_SR_TC (1 << 6)
 #define USART_SR_RXNE (1 << 5)
 
 #define SPI_BLOCK   (*(volatile uint8_t *)0x5200)
 #define SPI_SR      (*((&SPI_BLOCK) + 0x3))
+
+#define I2C_CR1		(*IO_PTR(0x5210 + 0x00))
+#define I2C_CR2		(*IO_PTR(0x5210 + 0x01))
+#define I2C_FREQR	(*IO_PTR(0x5210 + 0x02))
+#define I2C_OARL	(*IO_PTR(0x5210 + 0x03))
+#define I2C_OARH	(*IO_PTR(0x5210 + 0x04))
+// 0x05
+#define I2C_DR		(*IO_PTR(0x5210 + 0x06))
+#define I2C_SR1		(*IO_PTR(0x5210 + 0x07))
+#define I2C_SR2		(*IO_PTR(0x5210 + 0x08))
+#define I2C_SR3		(*IO_PTR(0x5210 + 0x09))
+#define I2C_ITR		(*IO_PTR(0x5210 + 0x0A))
+#define I2C_CCRL	(*IO_PTR(0x5210 + 0x0B))
+#define I2C_CCRH	(*IO_PTR(0x5210 + 0x0C))
+#define I2C_TRISER	(*IO_PTR(0x5210 + 0x0D))
 
 typedef enum {
 	IRQ_TLI = 0,
