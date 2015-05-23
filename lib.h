@@ -62,9 +62,9 @@ inline void init_timer2()
 //
 inline void config_timer2()
 {
-    TIM2_PSCR = 0x01;       //  Prescaler = 8.
-    TIM2_ARRH = (25000 >> 8);       //  High byte of 50,000.
-    TIM2_ARRL = (25000 & 0xFF);       //  Low byte of 50,000.
+    TIM2_PSCR = 0x08;       //  Prescaler = 8.
+    TIM2_ARRH = 0xff;       //  High byte of 50,000.
+    TIM2_ARRL = 0xff;       //  Low byte of 50,000.
     TIM2_IER->UIE = 1;       //  Enable the update interrupts.
     TIM2_CR1->CEN = 1;       //  Finally enable the timer.
 }
