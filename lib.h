@@ -62,7 +62,7 @@ inline void init_timer2()
 //
 inline void config_timer2()
 {
-    TIM2_PSCR = 0x08;       //  Prescaler = 8.
+    TIM2_PSCR = 0x06;       //  Prescaler = 8.
     TIM2_ARRH = 0xff;       //  High byte of 50,000.
     TIM2_ARRL = 0xff;       //  Low byte of 50,000.
     TIM2_IER->UIE = 1;       //  Enable the update interrupts.
@@ -161,6 +161,27 @@ inline void init_clock (void) {
     CLK_CKDIVR = 0x00; // Set the frequency to 16 MHz
     // CLK_PCKENR2 |= 0x02; // Enable clock to timer
     CLK_PCKENR1 = 0xFF; // Enable peripherals
+}
+
+inline void init_i2c (void) {
+    I2C_CR1 = 0x00; //Disable I2C
+    I2C_CR2 = 0x04; //Acknowledge enable
+
+    // Program the peripheral input clock in I2C_FREQR Register in order to generate correct timings.
+    I2C_FREQR = 10; //Peripheral clock frequency = 1~24mHz
+
+    // Configure the rise time register
+    // I2C_OARH = 0x40; //Addressing mode = 10-bit slave address (7-bit address not acknowledged)
+    I2C_OARH = 0x00; //Addressing mode = 7-bit slave address (10-bit address not acknowledged)
+    I2C_OARL = 0x00; //Interface address
+    I2C_ITR = 0x06; //Interrupt register
+
+    // Configure the clock control registers
+    I2C_CCRH = 0x80; //I2C master mode selection = Fast mode I2C
+    I2C_CCRL = 30;  //Clock control register (Master mode)
+
+    // Program the I2C_CR1 register to enable the peripheral
+    I2C_CR1 = 0x01; //Enable I2C
 }
 
 #endif
