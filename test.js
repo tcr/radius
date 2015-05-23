@@ -6,7 +6,7 @@ var sp = new SerialPort(process.argv[2], {
   baudrate: 19200
 }, false); // this is the openImmediately flag [default is true]
 
-var source = 'hello world!';
+var source = 'Tessel Tag\r\n';
 
 sp.open(function (error) {
   console.error('pipe open...');
@@ -20,14 +20,16 @@ sp.open(function (error) {
     pipe.write(data);
   })
 
-  sp.write(source, function (err, results) {
-    console.error('err:', err, 'bytes written:', results);
+  setTimeout(function () {
+    sp.write('!', function (err, results) {
+      console.error('err?', err, 'bytes written:', results);
 
-    setTimeout(function () {
-      console.error('done.');
-      // sp.end();
-      sp.close();
-      pipe.end();
-    }, 1000);
-  });
+      setTimeout(function () {
+        console.error('done.');
+        // sp.end();
+        sp.close();
+        pipe.end();
+      }, 1000);
+    });
+  }, 3000);
 });

@@ -177,25 +177,19 @@ void main (void) {
         if (doread) {
             // looper();
             doread = 0;
-            pos = 0;
-            UART1_CR2->TCIEN = 1;
             // uart_write(uartstr[0]);
             // uart_write('!');
             // gpio_write(0, gpio_read(0));
 
-            // i2c_read_byte(0x1D, 0x0D);
-            // while (i2c_read_byte_result(&regread)) {
-            //     __wait_for_interrupt();
-            // }
+            i2c_read_byte(0x1D, 0x0D);
+            while (i2c_read_byte_result(&regread)) {
+                __wait_for_interrupt();
+            }
 
-            // if (regread == 0x2A) {
-                // if (pos >= uartstr_len) {
-                //     pos = 1;
-                //     UART1_CR2->TEN = 1;
-                //     uart_write(uartstr[0]);
-                //     // pos = 1;
-                // }
-            // }
+            if (regread == 0x2A) {
+                pos = 0;
+                UART1_CR2->TCIEN = 1;
+            }
         }
 
         //     doread = 0;
