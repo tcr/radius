@@ -11,19 +11,13 @@ const uint8_t uartstr_len = 12;
 volatile uint8_t pos = 0;
 
 
-void i2c_interrupt (void) __interrupt(IRQ_I2C) {
-    // TODO
-
-}
-
-
 
 
 
 
 void I2C_Init(void);
 void I2C_Write(uint8_t Addr, uint8_t Reg, uint8_t Data);
-uint8_t I2C_ReadByte(uint8_t Addr, uint8_t Reg);
+void i2c_read_byte(uint8_t Addr, uint8_t Reg);
 uint16_t I2C_ReadWord(uint8_t Addr, uint8_t Reg);
 
 void I2C_Init(void)
@@ -38,7 +32,7 @@ void I2C_Init(void)
 // I2C_OARH = 0x40; //Addressing mode = 10-bit slave address (7-bit address not acknowledged)
  I2C_OARH = 0x00; //Addressing mode = 7-bit slave address (10-bit address not acknowledged)
  I2C_OARL = 0x00; //Interface address
- I2C_ITR = 0x00; //Interrupt register
+ I2C_ITR = 0x06; //Interrupt register
 
  // Configure the clock control registers
  I2C_CCRH = 0x80; //I2C master mode selection = Fast mode I2C
@@ -71,38 +65,74 @@ void I2C_Write(uint8_t Addr, uint8_t Reg, uint8_t Data)
  while(i--);
 }
 
-uint8_t I2C_ReadByte(uint8_t Addr, uint8_t Reg)
+#define scr_begin         static int scrLine = 0; switch(scrLine) { case 0:;
+#define scr_finish(z)     } scrLine = 0; return (z)
+#define scr_finish_void   } scrLine = 0; return
+
+#define scr_return(z)     \
+        do {\
+            scrLine=__LINE__;\
+            return (z); case __LINE__:;\
+        } while (0)
+#define scr_return_void       \
+        do {\
+            scrLine=__LINE__;\
+            return; case __LINE__:;\
+        } while (0)
+
+volatile uint8_t I2C_ReadByte_Result_Addr = 0;
+volatile uint8_t I2C_ReadByte_Result_Reg = 0;
+volatile uint8_t I2C_ReadByte_Result_Ready = 1;
+volatile uint8_t I2C_ReadByte_Result_Value = 0;
+
+
+void I2C_ReadByte_Inner(void)
 {
- uint8_t Temp, Byte_Read;
+ static uint8_t Temp, Byte_Read;
 
- while((I2C_SR3 & 0x02) != 0);
+ scr_begin;
+
+ while (I2C_ReadByte_Result_Ready) {
+    scr_return_void;
+ }
+
+ // while((I2C_SR3 & 0x02) != 0);
 
  // uartstr[0]++;
  
- I2C_CR2 |= 0x01;        //I2C Start Condition
- while((I2C_SR1 & 0x01) == 0); //Start condition generated
+ while ((I2C_SR1 & 0x01) == 0) { //Start condition generated
+     scr_return_void;
+ }
 
  // uartstr[0]++;
  
- I2C_DR = Addr;         //Device address
- while((I2C_SR1 & 0x80) == 0); //Data register empty (transmitters)
- // while((I2C_SR1 & 0x02) == 0); //Address sent
+ I2C_DR = I2C_ReadByte_Result_Addr;         //Device address
+ // if ((I2C_SR1 & 0x80) == 0); //Data register empty (transmitters)
+ while ((I2C_SR1 & 0x02) == 0) { //Address sent
+     scr_return_void;
+ }
  Temp = I2C_SR3;        //Status register
 
  // uartstr[0]++;
  
- I2C_DR = Reg;         //Device register
- while((I2C_SR1 & 0x80) == 0); //Data register empty (transmitters)
- 
+ I2C_DR = I2C_ReadByte_Result_Reg;         //Device register
+ while ((I2C_SR1 & 0x80) == 0) { //Data register empty (transmitters)
+     scr_return_void;
+ }
+
  // uartstr[0]++;
 
  I2C_CR2 |= 0x01;        //I2C Start Condition
- while((I2C_SR1 & 0x01) == 0); //Start condition generated
- 
+ while ((I2C_SR1 & 0x01) == 0) { //Start condition generated
+     scr_return_void;
+ }
+
  // uartstr[0]++;
 
- I2C_DR = (Addr | 0x01);    //Device address(read)
- while((I2C_SR1 & 0x02) == 0); //Address sent
+ I2C_DR = (I2C_ReadByte_Result_Addr | 0x01);    //Device address(read)
+ while ((I2C_SR1 & 0x02) == 0) { //Address sent
+     scr_return_void;
+ }
  Temp = I2C_SR3;        //Status register
  
  // uartstr[0]++;
@@ -111,13 +141,33 @@ uint8_t I2C_ReadByte(uint8_t Addr, uint8_t Reg)
  
  // uartstr[0]++;
 
- while((I2C_SR1 & 0x40) == 0); //Byte transfer finished
- Byte_Read = 0x00;        //Clean data
- Byte_Read = I2C_DR;
+ while ((I2C_SR1 & 0x40) == 0) { //Byte transfer finished
+     scr_return_void;
+ }
+ // Byte_Read = 0x00;        //Clean data
+ I2C_ReadByte_Result_Value = I2C_DR;
 
 // uartstr[0]++;
 
- return Byte_Read;
+ I2C_ReadByte_Result_Ready = 1;
+ // I2C_ReadByte_Result_Value = Byte_Read;
+
+ // return Byte_Read;
+ scr_finish_void;
+}
+
+void i2c_read_byte (uint8_t addr, uint8_t reg) {
+    I2C_ReadByte_Result_Addr = addr;
+    I2C_ReadByte_Result_Reg = reg;
+    I2C_ReadByte_Result_Ready = 0;
+    I2C_CR2 |= 0x01;        //I2C Start Condition
+}
+
+uint8_t i2c_read_byte_result (uint8_t* result) {
+    if (I2C_ReadByte_Result_Ready) {
+        *result = I2C_ReadByte_Result_Value;
+    }
+    return I2C_ReadByte_Result_Ready ? 0 : 1;
 }
 
 uint16_t I2C_ReadWord(uint8_t Addr, uint8_t Reg)
@@ -221,12 +271,25 @@ void irq_timer2 (void) __interrupt(IRQ_TIM2) {
 }
 
 
+void irq_i2c (void) __interrupt(IRQ_I2C) {
+
+    I2C_ReadByte_Inner();
+}
+
+void looper (void) {
+    scr_begin;
+    gpio_write(0, 1);
+    scr_return_void;
+    gpio_write(0, 0);
+    scr_finish_void;
+}
+
 //
 //  Main program loop.
 //
 void main (void) {
     volatile uint8_t a;
-    volatile uint16_t tempraw;
+    uint8_t regread;
     int32_t c;
     int32_t f;
 
@@ -247,16 +310,21 @@ void main (void) {
     while (1) {
 
         // uart_write(celsval);
-        // __wait_for_interrupt();
+        __wait_for_interrupt();
 
         if (doread) {
             gpio_write(0, gpio_read(0));
+            // looper();
 
             doread = 0;
             // uart_write('!');
 
-            tempraw = I2C_ReadByte(0x3A, 0x0D);
-            if (tempraw == 0x2A) {
+            i2c_read_byte(0x3A, 0x0D);
+            while (i2c_read_byte_result(&regread)) {
+                __wait_for_interrupt();
+            }
+
+            if (regread == 0x2A) {
                 if (pos >= uartstr_len) {
                     pos = 0;
                     UART1_CR2->TEN = 1;
