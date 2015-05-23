@@ -116,6 +116,7 @@ typedef struct {
 #define USART_CR3_STOP2 (1 << 5)
 #define USART_CR3_STOP1 (1 << 4)
 #define USART_SR_TXE (1 << 7)
+#define USART_SR_TC (1 << 6)
 #define USART_SR_RXNE (1 << 5)
 
 #define SPI_BLOCK   (*(volatile uint8_t *)0x5200)

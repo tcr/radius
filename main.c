@@ -8,7 +8,7 @@
 
 char uartstr[16] = "Tessel Tag\r\n";
 const uint8_t uartstr_len = 12;
-uint8_t pos = 0;
+volatile uint8_t pos = 0;
 
 
 void i2c_interrupt (void) __interrupt(IRQ_I2C) {
@@ -77,45 +77,45 @@ uint8_t I2C_ReadByte(uint8_t Addr, uint8_t Reg)
 
  while((I2C_SR3 & 0x02) != 0);
 
- uartstr[0]++;
+ // uartstr[0]++;
  
  I2C_CR2 |= 0x01;        //I2C Start Condition
  while((I2C_SR1 & 0x01) == 0); //Start condition generated
 
- uartstr[0]++;
+ // uartstr[0]++;
  
  I2C_DR = Addr;         //Device address
  while((I2C_SR1 & 0x80) == 0); //Data register empty (transmitters)
  // while((I2C_SR1 & 0x02) == 0); //Address sent
  Temp = I2C_SR3;        //Status register
 
- uartstr[0]++;
+ // uartstr[0]++;
  
  I2C_DR = Reg;         //Device register
  while((I2C_SR1 & 0x80) == 0); //Data register empty (transmitters)
  
- uartstr[0]++;
+ // uartstr[0]++;
 
  I2C_CR2 |= 0x01;        //I2C Start Condition
  while((I2C_SR1 & 0x01) == 0); //Start condition generated
  
- uartstr[0]++;
+ // uartstr[0]++;
 
  I2C_DR = (Addr | 0x01);    //Device address(read)
  while((I2C_SR1 & 0x02) == 0); //Address sent
  Temp = I2C_SR3;        //Status register
  
- uartstr[0]++;
+ // uartstr[0]++;
 
  I2C_CR2 |= 0x02;        //I2C Stop Condition
  
- uartstr[0]++;
+ // uartstr[0]++;
 
  while((I2C_SR1 & 0x40) == 0); //Byte transfer finished
  Byte_Read = 0x00;        //Clean data
  Byte_Read = I2C_DR;
 
-uartstr[0]++;
+// uartstr[0]++;
 
  return Byte_Read;
 }
@@ -185,21 +185,27 @@ void write_chars (char* to, uint8_t val) {
     to[1] = low > 0x9 ? 0x61 + (low - 0xa) : 0x30 + low;
 }
 
-int doread = 0;
+volatile int doread = 0;
 
 void uart_timer (void) __interrupt(IRQ_UART1) {
     volatile uint8_t a;
-    return;
-    
-    if (uart_tx_complete() && pos < uartstr_len) {
-        uart_write(uartstr[pos]);
-        ++pos;
+    // return;
+        // gpio_write(0, 1);
+    if (uart_tx_complete()) {
+        // gpio_write(0, 1);
+        if (pos < uartstr_len) {
+            uart_write(uartstr[pos]);
+            ++pos;
+        }
+    }
+    if (uart_tc_complete()) {
+        // gpio_write(0, 0);
+        // UART1_CR2->TEN = 0;
+        uart_write('!');
+        UART1_CR2->TEN = 0;
     }
     if (uart_rx_available()) {
-    //     gpio_write(0, 1);
         a = USART1_DR;
-        pos = 0;
-        doread = 1;
     //     uart_write(uartstr[0]);
     //     uart_write(uartstr[1]);
     //     uart_write(uartstr[2]);
@@ -209,9 +215,7 @@ void uart_timer (void) __interrupt(IRQ_UART1) {
 
 
 void irq_timer2 (void) __interrupt(IRQ_TIM2) {
-    volatile uint16_t tempraw;
-    gpio_write(0, gpio_read(0));
-    tempraw = I2C_ReadByte(0x3A, 0x0D);
+    doread = 1;
     //  Reset the interrupt otherwise it will fire again straight away.
     TIM2_SR1->UIF = 0;
 }
@@ -222,6 +226,7 @@ void irq_timer2 (void) __interrupt(IRQ_TIM2) {
 //
 void main (void) {
     volatile uint8_t a;
+    volatile uint16_t tempraw;
     int32_t c;
     int32_t f;
 
@@ -242,10 +247,24 @@ void main (void) {
     while (1) {
 
         // uart_write(celsval);
-        __wait_for_interrupt();
+        // __wait_for_interrupt();
 
-        // if (doread) {
-        //     doread = 0;
+        if (doread) {
+            gpio_write(0, gpio_read(0));
+
+            doread = 0;
+            // uart_write('!');
+
+            tempraw = I2C_ReadByte(0x3A, 0x0D);
+            if (tempraw == 0x2A) {
+                if (pos >= uartstr_len) {
+                    pos = 0;
+                    UART1_CR2->TEN = 1;
+                    // uart_write(uartstr[0]);
+                    // pos = 1;
+                }
+            }
+        }
 
         //     doread = 0;
         //     pos = 0;

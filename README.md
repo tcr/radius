@@ -40,6 +40,7 @@ Reference manual: http://www.st.com/web/en/resource/technical/document/reference
  * SPI: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=259
  * I2C: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=285
  * GPIO: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=106
+ * UART: http://www.st.com/web/en/resource/technical/document/reference_manual/CD00190271.pdf#page=318
 
 CPU reference: http://www.st.com/web/en/resource/technical/document/programming_manual/CD00161709.pdf
 

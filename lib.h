@@ -130,7 +130,7 @@ inline void uart1_921600 (void) {
 }
 
 inline void config_uart (void) {
-    assign_reg(UART1_CR2, { .TIEN = 1, .TEN = 1, .RIEN = 1, .REN = 1 });
+    assign_reg(UART1_CR2, { .TCIEN = 1, .TIEN = 1, .TEN = 1, .RIEN = 1, .REN = 1 });
     assign_reg(UART1_CR3, { .STOP = UART1_CR2_STOP_TWO });
     uart1_19200();
 }
@@ -141,6 +141,10 @@ inline uint8_t uart_tx_complete (void) {
 
 uint8_t uart_rx_available (void) {
 	return USART1_SR & USART_SR_RXNE;
+}
+
+inline uint8_t uart_tc_complete (void) {
+    return USART1_SR & USART_SR_TC;
 }
 
 inline void uart_wait () {
