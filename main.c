@@ -73,11 +73,13 @@ void irq_i2c (void) __interrupt(IRQ_I2C) {
     // HighByteRead = 0x00;      //Clean data
     // HighByteRead = I2C_DR;     //Byte 1
 
+    if (I2C_ReadByte_Result_Count > 1) {
+        I2C_CR2 = 0x04;        //I2C Ack Condition
+    }
+
     while (I2C_ReadByte_Result_Count > 0) {
-        if (I2C_ReadByte_Result_Count > 2) {
-            I2C_CR2 |= 0x04;        //I2C Ack Condition
-        } else if (I2C_ReadByte_Result_Count == 1) {
-            I2C_CR2 |= 0x02;        //I2C Stop Condition
+        if (I2C_ReadByte_Result_Count == 1) {
+            I2C_CR2 = 0x02;        //I2C Stop Condition
         }
 
         while ((I2C_SR1 & 0x40) == 0) { //Byte transfer finished
@@ -135,6 +137,7 @@ void uart_tx (void) __interrupt(IRQ_UART1) {
 }
 
 volatile uint8_t input_byte = 0;
+volatile uint8_t input_byte_count = 0;
 
 void uart_rx (void) __interrupt(IRQ_UART1_FULL) {
     scr_begin;
@@ -149,6 +152,10 @@ void uart_rx (void) __interrupt(IRQ_UART1_FULL) {
     scr_return_void;
 
     input_byte = USART1_DR;
+    scr_return_void;
+
+    input_byte_count = USART1_DR;
+
     doread = 1;
 
     scr_finish_void;
@@ -201,12 +208,17 @@ void main (void) {
             // uart_write('!');
             // gpio_write(0, gpio_read(0));
 
-            i2c_read_bytes(0x1D, input_byte, 2);
+            i2c_read_bytes(0x1D, input_byte, input_byte_count);
             while (i2c_read_byte_result()) {
                 __wait_for_interrupt();
             }
 
             uartstr[0] = I2C_ReadByte_Result_Value[0];
+            uartstr[1] = I2C_ReadByte_Result_Value[1];
+            uartstr[2] = I2C_ReadByte_Result_Value[2];
+            uartstr[3] = I2C_ReadByte_Result_Value[3];
+            uartstr[4] = I2C_ReadByte_Result_Value[4];
+            uartstr[5] = I2C_ReadByte_Result_Value[5];
 
             // if (regread == 0x2A) {
                 pos = 0;
