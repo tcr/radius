@@ -22,6 +22,7 @@ sp.open(function (error) {
   })
 
   var WHOAMI = 0x0D;
+  var X_MSB = 0x01;
 
   sp.write(new Buffer(['R'.charCodeAt(0), WHOAMI]), function (err, results) {
     console.error('err?', err, 'bytes written:', results);

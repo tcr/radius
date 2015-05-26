@@ -13,7 +13,9 @@ volatile uint8_t pos = 0;
 volatile uint8_t I2C_ReadByte_Result_Addr = 0;
 volatile uint8_t I2C_ReadByte_Result_Reg = 0;
 volatile uint8_t I2C_ReadByte_Result_Ready = 1;
-volatile uint8_t I2C_ReadByte_Result_Value = 0;
+volatile uint8_t I2C_ReadByte_Result_Value[32] = { 0 };
+volatile uint8_t I2C_ReadByte_Result_Count = 0;
+volatile uint8_t I2C_ReadByte_Result_Pos = 0;
 
 void irq_i2c (void) __interrupt(IRQ_I2C) {
     static uint8_t Temp, Byte_Read;
@@ -71,13 +73,20 @@ void irq_i2c (void) __interrupt(IRQ_I2C) {
     // HighByteRead = 0x00;      //Clean data
     // HighByteRead = I2C_DR;     //Byte 1
 
-    I2C_CR2 |= 0x02;        //I2C Stop Condition
+    if (I2C_ReadByte_Result_Count > 1) {
+        I2C_CR2 |= 0x04;        //I2C Ack Condition
+    } else {
+        I2C_CR2 |= 0x02;        //I2C Stop Condition
+    }
+    scr_return_void;
 
     while ((I2C_SR1 & 0x40) == 0) { //Byte transfer finished
       scr_return_void;
     }
     // Byte_Read = 0x00;        //Clean data
-    I2C_ReadByte_Result_Value = I2C_DR;
+    I2C_ReadByte_Result_Value[I2C_ReadByte_Result_Pos++] = I2C_DR;
+
+    --I2C_ReadByte_Result_Count;
 
     I2C_ReadByte_Result_Ready = 1;
 
@@ -88,6 +97,8 @@ void i2c_read_byte (uint8_t addr, uint8_t reg) {
     I2C_ReadByte_Result_Addr = addr;
     I2C_ReadByte_Result_Reg = reg;
     I2C_ReadByte_Result_Ready = 0;
+    I2C_ReadByte_Result_Count = 1;
+    I2C_ReadByte_Result_Pos = 0;
     I2C_CR2 |= 0x01;        //I2C Start Condition
 }
 
@@ -126,7 +137,7 @@ volatile uint8_t input_byte = 0;
 
 void uart_rx (void) __interrupt(IRQ_UART1_FULL) {
     scr_begin;
-    
+
     while (1) {
         input_byte = USART1_DR;
         if (input_byte != 'R') {
@@ -194,7 +205,7 @@ void main (void) {
                 __wait_for_interrupt();
             }
 
-            uartstr[0] = I2C_ReadByte_Result_Value;
+            uartstr[0] = I2C_ReadByte_Result_Value[0];
 
             // if (regread == 0x2A) {
                 pos = 0;
