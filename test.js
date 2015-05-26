@@ -12,24 +12,47 @@ sp.open(function (error) {
   console.error('pipe open...');
 
   var pipe = concat(function (data) {
-    console.log(data.toString());
-    assert.equal(data.toString(), source);
+    // console.log(data.toString());
+    console.log(data);
+
+    assert.equal(data[0], 'r'.charCodeAt(0));
+    assert.equal(data[1], 0x2A);
+    return;
+
+    var rawData = data;
+    var scaleRange = 1;
+    var out = [];
+    for (var i = 0; i < 3 ; i++) {
+      var gCount = (rawData[i*2] << 8) | rawData[(i*2)+1];  // Combine the two 8 bit registers into one 12-bit number
+
+      gCount = (gCount >> 4); // The registers are left align, here we right align the 12-bit integer
+
+      // If the number is negative, we have to make it so manually (no 12-bit data type)
+      if (rawData[i*2] > 0x7F) {
+        gCount = -(1 + 0xFFF - gCount); // Transform into negative 2's complement
+      }
+
+      out[i] = gCount / ((1<<12)/(2*scaleRange));
+    }
+
+    console.log(out);
   });
 
   sp.on('data', function (data) {
     pipe.write(data);
   })
 
-  setTimeout(function () {
-    sp.write('!', function (err, results) {
-      console.error('err?', err, 'bytes written:', results);
+  var WHOAMI = 0x0D;
+  var X_MSB = 0x01;
 
-      setTimeout(function () {
-        console.error('done.');
-        // sp.end();
-        sp.close();
-        pipe.end();
-      }, 1000);
-    });
-  }, 3000);
+  sp.write(new Buffer(['R'.charCodeAt(0), WHOAMI, 0x01]), function (err, results) {
+    console.error('err?', err, 'bytes written:', results);
+
+    setTimeout(function () {
+      console.error('done.');
+      // sp.end();
+      sp.close();
+      pipe.end();
+    }, 250);
+  });
 });
