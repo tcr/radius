@@ -73,31 +73,32 @@ void irq_i2c (void) __interrupt(IRQ_I2C) {
     // HighByteRead = 0x00;      //Clean data
     // HighByteRead = I2C_DR;     //Byte 1
 
-    if (I2C_ReadByte_Result_Count > 1) {
-        I2C_CR2 |= 0x04;        //I2C Ack Condition
-    } else {
-        I2C_CR2 |= 0x02;        //I2C Stop Condition
-    }
-    scr_return_void;
+    while (I2C_ReadByte_Result_Count > 0) {
+        if (I2C_ReadByte_Result_Count > 2) {
+            I2C_CR2 |= 0x04;        //I2C Ack Condition
+        } else if (I2C_ReadByte_Result_Count == 1) {
+            I2C_CR2 |= 0x02;        //I2C Stop Condition
+        }
 
-    while ((I2C_SR1 & 0x40) == 0) { //Byte transfer finished
-      scr_return_void;
-    }
-    // Byte_Read = 0x00;        //Clean data
-    I2C_ReadByte_Result_Value[I2C_ReadByte_Result_Pos++] = I2C_DR;
+        while ((I2C_SR1 & 0x40) == 0) { //Byte transfer finished
+          scr_return_void;
+        }
+        // Byte_Read = 0x00;        //Clean data
+        I2C_ReadByte_Result_Value[I2C_ReadByte_Result_Pos++] = I2C_DR;
 
-    --I2C_ReadByte_Result_Count;
+        --I2C_ReadByte_Result_Count;
+    }
 
     I2C_ReadByte_Result_Ready = 1;
 
     scr_finish_void;
 }
 
-void i2c_read_byte (uint8_t addr, uint8_t reg) {
+void i2c_read_bytes (uint8_t addr, uint8_t reg, size_t count) {
     I2C_ReadByte_Result_Addr = addr;
     I2C_ReadByte_Result_Reg = reg;
     I2C_ReadByte_Result_Ready = 0;
-    I2C_ReadByte_Result_Count = 1;
+    I2C_ReadByte_Result_Count = count;
     I2C_ReadByte_Result_Pos = 0;
     I2C_CR2 |= 0x01;        //I2C Start Condition
 }
@@ -200,7 +201,7 @@ void main (void) {
             // uart_write('!');
             // gpio_write(0, gpio_read(0));
 
-            i2c_read_byte(0x1D, input_byte);
+            i2c_read_bytes(0x1D, input_byte, 2);
             while (i2c_read_byte_result()) {
                 __wait_for_interrupt();
             }
