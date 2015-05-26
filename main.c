@@ -6,7 +6,7 @@
 #include "lib.h"
 #include "coroutine.h"
 
-char uartstr[16] = "Tessel Tag\r\n";
+char uartstr[16] = { 0 };
 const uint8_t uartstr_len = 12;
 volatile uint8_t pos = 0;
 
@@ -91,10 +91,7 @@ void i2c_read_byte (uint8_t addr, uint8_t reg) {
     I2C_CR2 |= 0x01;        //I2C Start Condition
 }
 
-uint8_t i2c_read_byte_result (uint8_t* result) {
-    if (I2C_ReadByte_Result_Ready) {
-        *result = I2C_ReadByte_Result_Value;
-    }
+uint8_t i2c_read_byte_result () {
     return I2C_ReadByte_Result_Ready ? 0 : 1;
 }
 
@@ -125,19 +122,30 @@ void uart_tx (void) __interrupt(IRQ_UART1) {
     // }
 }
 
+volatile uint8_t input_byte = 0;
+
 void uart_rx (void) __interrupt(IRQ_UART1_FULL) {
-    volatile uint8_t a;
-    // return;
-        // gpio_write(0, 1);
-    if (uart_rx_available()) {
-        a = USART1_DR;
-        doread = 1;
-        gpio_write(0, gpio_read(0));
+    scr_begin;
+    
+    while (1) {
+        input_byte = USART1_DR;
+        if (input_byte != 'R') {
+            scr_return_void;
+        }
+        break;
+    }
+    scr_return_void;
+
+    input_byte = USART1_DR;
+    doread = 1;
+
+    scr_finish_void;
+
     //     uart_write(uartstr[0]);
     //     uart_write(uartstr[1]);
     //     uart_write(uartstr[2]);
     //     uart_write(uartstr[3]);
-    }
+    // }
 }
 
 
@@ -181,15 +189,17 @@ void main (void) {
             // uart_write('!');
             // gpio_write(0, gpio_read(0));
 
-            i2c_read_byte(0x1D, 0x0D);
-            while (i2c_read_byte_result(&regread)) {
+            i2c_read_byte(0x1D, input_byte);
+            while (i2c_read_byte_result()) {
                 __wait_for_interrupt();
             }
 
-            if (regread == 0x2A) {
+            uartstr[0] = I2C_ReadByte_Result_Value;
+
+            // if (regread == 0x2A) {
                 pos = 0;
                 UART1_CR2->TCIEN = 1;
-            }
+            // }
         }
 
         //     doread = 0;

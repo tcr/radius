@@ -12,24 +12,25 @@ sp.open(function (error) {
   console.error('pipe open...');
 
   var pipe = concat(function (data) {
-    console.log(data.toString());
-    assert.equal(data.toString(), source);
+    // console.log(data.toString());
+    console.log(data);
+    assert.equal(data[0], 0x2A);
   });
 
   sp.on('data', function (data) {
     pipe.write(data);
   })
 
-  setTimeout(function () {
-    sp.write('!', function (err, results) {
-      console.error('err?', err, 'bytes written:', results);
+  var WHOAMI = 0x0D;
 
-      setTimeout(function () {
-        console.error('done.');
-        // sp.end();
-        sp.close();
-        pipe.end();
-      }, 1000);
-    });
-  }, 3000);
+  sp.write(new Buffer(['R'.charCodeAt(0), WHOAMI]), function (err, results) {
+    console.error('err?', err, 'bytes written:', results);
+
+    setTimeout(function () {
+      console.error('done.');
+      // sp.end();
+      sp.close();
+      pipe.end();
+    }, 250);
+  });
 });
