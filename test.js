@@ -15,7 +15,8 @@ sp.open(function (error) {
     // console.log(data.toString());
     console.log(data);
 
-    assert.equal(data[0], 0x2A);
+    assert.equal(data[0], 'r'.charCodeAt(0));
+    assert.equal(data[1], 0x2A);
     return;
 
     var rawData = data;

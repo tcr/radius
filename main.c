@@ -213,12 +213,13 @@ void main (void) {
                 __wait_for_interrupt();
             }
 
-            uartstr[0] = I2C_ReadByte_Result_Value[0];
-            uartstr[1] = I2C_ReadByte_Result_Value[1];
-            uartstr[2] = I2C_ReadByte_Result_Value[2];
-            uartstr[3] = I2C_ReadByte_Result_Value[3];
-            uartstr[4] = I2C_ReadByte_Result_Value[4];
-            uartstr[5] = I2C_ReadByte_Result_Value[5];
+            uartstr[0] = 'r';
+            uartstr[1] = I2C_ReadByte_Result_Value[0];
+            uartstr[2] = I2C_ReadByte_Result_Value[1];
+            uartstr[3] = I2C_ReadByte_Result_Value[2];
+            uartstr[4] = I2C_ReadByte_Result_Value[3];
+            uartstr[5] = I2C_ReadByte_Result_Value[4];
+            uartstr[6] = I2C_ReadByte_Result_Value[5];
 
             // if (regread == 0x2A) {
                 pos = 0;
