@@ -13,6 +13,11 @@ sp.open(function (error) {
 
   var pipe = concat(function (data) {
     // console.log(data.toString());
+
+    // Read until first response
+    while (data[0] != 'r'.charCodeAt(0)) {
+      data = data.slice(1);
+    }
     console.log(data);
 
     assert.equal(data[0], 'r'.charCodeAt(0));

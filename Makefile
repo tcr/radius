@@ -24,5 +24,5 @@ test:
 	node test.js /dev/cu.wchusbserial*
 
 osx-unload:
-	sudo kextunload -b com.apple.driver.AppleUSBCardReader
-	sudo kextunload -b com.apple.iokit.IOUSBMassStorageClass
+	sudo kextunload -b com.apple.driver.AppleUSBCardReader || true
+	sudo kextunload -b com.apple.iokit.IOUSBMassStorageClass || true
