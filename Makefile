@@ -1,7 +1,7 @@
 MAX_ALLOCS_PER_NODE=3000
 SDCC=sdcc
 
-.PHONY: build clean test
+.PHONY: build clean test osx-unload
 
 all: build build/tesseltag.ihx
 
@@ -22,3 +22,7 @@ flash: build/tesseltag.ihx
 
 test:
 	node test.js /dev/cu.wchusbserial*
+
+osx-unload:
+	sudo kextunload -b com.apple.driver.AppleUSBCardReader
+	sudo kextunload -b com.apple.iokit.IOUSBMassStorageClass
