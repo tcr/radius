@@ -3,7 +3,7 @@ var concat = require('concat-stream');
 var assert = require('assert');
 
 var sp = new SerialPort(process.argv[2], {
-  baudrate: 19200
+  baudrate: 57600
 }, false); // this is the openImmediately flag [default is true]
 
 var source = 'Tessel Tag\r\n';

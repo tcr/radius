@@ -67,12 +67,6 @@ void irq_i2c (void) __interrupt(IRQ_I2C) {
     }
     Temp = I2C_SR3;        //Status register
 
-    // Reading
-    // I2C_CR2 |= 0x04;        //I2C Ack Condition
-    // while((I2C_SR1 & 0x40) == 0); //Byte transfer finished
-    // HighByteRead = 0x00;      //Clean data
-    // HighByteRead = I2C_DR;     //Byte 1
-
     if (i2c_static_count > 1) {
         I2C_CR2 = 0x04;        //I2C Ack Condition
     }
