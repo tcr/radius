@@ -51,6 +51,10 @@ Product Datasheet: http://www.st.com/web/en/resource/technical/document/datashee
 
  Errata: http://postar.sino-star.com/public/uploads/20120214161049_871.pdf
 
+## CH340G
+
+Datasheet: http://www.seeedstudio.com/wiki/images/7/7c/CH340DS1_EN.PDF
+
 ## tools
 
 https://github.com/vdudouyt/stm8flash
