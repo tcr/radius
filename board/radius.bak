@@ -243,9 +243,9 @@ F 3 "" H 2750 6300 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 5550 5350 2    60   Output ~ 0
-TXD
+USB_TX
 Text GLabel 5550 5200 2    60   Output ~ 0
-RXD
+USB_RX
 Text GLabel 3150 5350 0    60   Output ~ 0
 XI
 Text GLabel 3150 5500 0    60   Output ~ 0
