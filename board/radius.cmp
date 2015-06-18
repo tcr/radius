@@ -1,0 +1,80 @@
+Cmp-Mod V01 Created by Cvpcb (2015-04-09 BZR 5589)-product   date = Tuesday, June 16, 2015 'AMt' 12:07:47 AM
+
+BeginCmp
+TimeStamp = /557FBFD1;
+Reference = C1;
+ValeurCmp = C;
+IdModule  = Capacitors_SMD:C_0603_HandSoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = /557FB37B;
+Reference = C2;
+ValeurCmp = C;
+IdModule  = Capacitors_SMD:C_0603_HandSoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = /557FA561;
+Reference = C3;
+ValeurCmp = C;
+IdModule  = Capacitors_SMD:C_0603_HandSoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = /557FB571;
+Reference = C4;
+ValeurCmp = C;
+IdModule  = Capacitors_SMD:C_0603_HandSoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = /557FB5A3;
+Reference = C5;
+ValeurCmp = C;
+IdModule  = Capacitors_SMD:C_0603_HandSoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = /557FA4E7;
+Reference = IC1;
+ValeurCmp = STM8S003F3P;
+IdModule  = Housings_SSOP:TSSOP-20_4.4x6.5mm_Pitch0.65mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /557FD28F;
+Reference = P1;
+ValeurCmp = CONN_01X04;
+IdModule  = Socket_Strips:Socket_Strip_Straight_1x04;
+EndCmp
+
+BeginCmp
+TimeStamp = /557FD61A;
+Reference = P2;
+ValeurCmp = CONN_01X10;
+IdModule  = Socket_Strips:Socket_Strip_Angled_1x10;
+EndCmp
+
+BeginCmp
+TimeStamp = /557FBDB4;
+Reference = U1;
+ValeurCmp = CH340G;
+IdModule  = Housings_SSOP:SSOP-16_3.9x4.9mm_Pitch0.635mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /557FCB91;
+Reference = U2;
+ValeurCmp = LM2931AZ-3.3/5.0;
+IdModule  = Power_Integrations:SO-8;
+EndCmp
+
+BeginCmp
+TimeStamp = /557FB4E7;
+Reference = Y1;
+ValeurCmp = Crystal;
+IdModule  = Crystals:Crystal_SMD_0603_4Pads;
+EndCmp
+
+EndListe

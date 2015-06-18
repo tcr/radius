@@ -50,7 +50,12 @@ sp.open(function (error) {
   var WHOAMI = 0x0D;
   var X_MSB = 0x01;
 
-  sp.write(new Buffer(['R'.charCodeAt(0), WHOAMI, 0x01]), function (err, results) {
+  var out = new Buffer(17);
+  out[0] = 0x02;
+  out[1] = WHOAMI;
+  out[2] = 0x01;
+
+  sp.write(out, function (err, results) {
     console.error('err?', err, 'bytes written:', results);
 
     setTimeout(function () {
