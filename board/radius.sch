@@ -439,15 +439,15 @@ U 1 1 557FD28F
 P 9450 3850
 F 0 "P1" H 9450 4100 50  0000 C CNN
 F 1 "CONN_01X04" V 9550 3850 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x04" H 9450 3850 60  0001 C CNN
+F 2 "usbpcb:USB-A-PCB" H 9450 3850 60  0001 C CNN
 F 3 "" H 9450 3850 60  0000 C CNN
 	1    9450 3850
 	1    0    0    -1  
 $EndComp
 Text GLabel 9250 3800 0    60   Output ~ 0
-D+
-Text GLabel 9250 3900 0    60   Output ~ 0
 D-
+Text GLabel 9250 3900 0    60   Output ~ 0
+D+
 $Comp
 L GND #PWR012
 U 1 1 557FD427
