@@ -118,7 +118,7 @@ U 1 1 557FB4E7
 P 9350 1350
 F 0 "Y1" H 9350 1500 50  0000 C CNN
 F 1 "Crystal" H 9350 1200 50  0000 C CNN
-F 2 "Crystals:Crystal_SMD_0603_4Pads" H 9350 1350 60  0001 C CNN
+F 2 "Crystals:Crystal_SMD_0603_2Pads_obsolete" H 9350 1350 60  0001 C CNN
 F 3 "" H 9350 1350 60  0000 C CNN
 	1    9350 1350
 	0    1    1    0   
@@ -193,7 +193,7 @@ U 1 1 557FBDB4
 P 4200 5550
 F 0 "U1" H 4200 6250 60  0000 C CNN
 F 1 "CH340G" H 4200 4850 60  0000 C CNN
-F 2 "Housings_SSOP:SSOP-16_3.9x4.9mm_Pitch0.635mm" H 4150 6650 60  0001 C CNN
+F 2 "SMD_Packages:SO-16-N" H 4150 6650 60  0001 C CNN
 F 3 "" H 4150 6650 60  0000 C CNN
 	1    4200 5550
 	1    0    0    -1  
@@ -445,9 +445,9 @@ F 3 "" H 9450 3850 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 9250 3800 0    60   Output ~ 0
-D+
-Text GLabel 9250 3900 0    60   Output ~ 0
 D-
+Text GLabel 9250 3900 0    60   Output ~ 0
+D+
 $Comp
 L GND #PWR012
 U 1 1 557FD427
