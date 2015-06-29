@@ -3,9 +3,9 @@
   (general
     (links 35)
     (no_connects 35)
-    (area 0 0 0 0)
+    (area 150.657477 101.618 181.123001 130.225001)
     (thickness 1.6)
-    (drawings 0)
+    (drawings 14)
     (tracks 0)
     (zones 0)
     (modules 11)
@@ -42,7 +42,7 @@
     (zone_clearance 0.508)
     (zone_45_only no)
     (trace_min 0.2)
-    (segment_width 0.2)
+    (segment_width 0.381)
     (edge_width 0.1)
     (via_size 0.6)
     (via_drill 0.4)
@@ -140,7 +140,7 @@
   )
 
   (module Capacitors_SMD:C_0603_HandSoldering (layer F.Cu) (tedit 541A9B4D) (tstamp 55915DB8)
-    (at 161.036 106.426 90)
+    (at 161.798 106.807 90)
     (descr "Capacitor SMD 0603, hand soldering")
     (tags "capacitor 0603")
     (path /558B5C2A)
@@ -169,7 +169,7 @@
   )
 
   (module Capacitors_SMD:C_0603_HandSoldering (layer F.Cu) (tedit 559160AF) (tstamp 55915DBE)
-    (at 177.927 104.267)
+    (at 178.435 105.156)
     (descr "Capacitor SMD 0603, hand soldering")
     (tags "capacitor 0603")
     (path /557FB37B)
@@ -198,7 +198,7 @@
   )
 
   (module Capacitors_SMD:C_0603_HandSoldering (layer F.Cu) (tedit 541A9B4D) (tstamp 55915DC4)
-    (at 172.1485 104.3305 180)
+    (at 174.625 105.156 180)
     (descr "Capacitor SMD 0603, hand soldering")
     (tags "capacitor 0603")
     (path /557FA561)
@@ -227,7 +227,7 @@
   )
 
   (module Capacitors_SMD:C_0603_HandSoldering (layer F.Cu) (tedit 541A9B4D) (tstamp 55915DCA)
-    (at 167.9575 104.3305 180)
+    (at 168.402 105.156 180)
     (descr "Capacitor SMD 0603, hand soldering")
     (tags "capacitor 0603")
     (path /557FB571)
@@ -256,7 +256,7 @@
   )
 
   (module Capacitors_SMD:C_0603_HandSoldering (layer F.Cu) (tedit 541A9B4D) (tstamp 55915DD0)
-    (at 164.084 104.394)
+    (at 164.592 105.156)
     (descr "Capacitor SMD 0603, hand soldering")
     (tags "capacitor 0603")
     (path /557FB5A3)
@@ -285,7 +285,7 @@
   )
 
   (module Housings_SSOP:TSSOP-20_4.4x6.5mm_Pitch0.65mm (layer F.Cu) (tedit 54130A77) (tstamp 55915DE8)
-    (at 165.735 109.4105 270)
+    (at 166.116 109.982 270)
     (descr "20-Lead Plastic Thin Shrink Small Outline (ST)-4.4 mm Body [TSSOP] (see Microchip Packaging Specification 00000049BS.pdf)")
     (tags "SSOP 0.65")
     (path /557FA4E7)
@@ -346,7 +346,7 @@
   )
 
   (module usbpcb:USB-A-PCB (layer B.Cu) (tedit 558C9471) (tstamp 55915DF0)
-    (at 166.243 126.1745 270)
+    (at 167.386 127.903 270)
     (descr "Card-edge USB A connector.")
     (path /557FD28F)
     (fp_text reference P1 (at 0 0 270) (layer Cmts.User) hide
@@ -455,7 +455,7 @@
   )
 
   (module SMD_Packages:SO-16-N (layer F.Cu) (tedit 55915E9C) (tstamp 55915E12)
-    (at 174.625 109.347)
+    (at 175.26 109.855)
     (descr "Module CMS SOJ 16 pins large")
     (tags "CMS SOJ")
     (path /557FBDB4)
@@ -506,7 +506,7 @@
   )
 
   (module Power_Integrations:SO-8 (layer F.Cu) (tedit 55915E3D) (tstamp 55915E1E)
-    (at 158.115 110.9345 90)
+    (at 158.242 111.252 90)
     (descr "SO-8 Surface Mount Small Outline 150mil 8pin Package")
     (tags "Power Integrations D Package")
     (path /557FCB91)
@@ -536,7 +536,7 @@
   )
 
   (module Crystals:Crystal_SMD_0603_4Pads (layer F.Cu) (tedit 0) (tstamp 55915E26)
-    (at 156.718 106.045 180)
+    (at 157.734 106.553 180)
     (descr "Crystal, Quarz, SMD, 0603, 4 Pads,")
     (tags "Crystal, Quarz, SMD, 0603, 4 Pads,")
     (path /557FB4E7)
@@ -559,5 +559,20 @@
     (pad 3 smd rect (at 2.19964 -1.19888 180) (size 1.80086 1.39954) (layers F.Cu F.Paste F.Mask))
     (pad 4 smd rect (at -2.19964 -1.19888 180) (size 1.80086 1.39954) (layers F.Cu F.Paste F.Mask))
   )
+
+  (gr_line (start 173.355 116.586) (end 180.467 116.586) (angle 90) (layer Edge.Cuts) (width 0.1))
+  (gr_line (start 173.355 131.826) (end 173.355 116.586) (angle 90) (layer Edge.Cuts) (width 0.1))
+  (gr_line (start 161.417 131.826) (end 173.355 131.826) (angle 90) (layer Edge.Cuts) (width 0.1))
+  (gr_line (start 161.417 116.586) (end 160.274 116.586) (angle 90) (layer Edge.Cuts) (width 0.1))
+  (gr_line (start 161.417 131.826) (end 161.417 116.586) (angle 90) (layer Edge.Cuts) (width 0.1))
+  (gr_line (start 154.178 116.586) (end 154.178 104.267) (angle 90) (layer Edge.Cuts) (width 0.1))
+  (gr_line (start 154.305 116.586) (end 154.178 116.586) (angle 90) (layer Edge.Cuts) (width 0.1))
+  (gr_line (start 160.274 116.586) (end 154.305 116.586) (angle 90) (layer Edge.Cuts) (width 0.1))
+  (gr_line (start 180.467 104.267) (end 180.467 116.586) (angle 90) (layer Edge.Cuts) (width 0.1))
+  (gr_line (start 180.213 104.521) (end 180.213 105.283) (angle 90) (layer Margin) (width 0.381))
+  (gr_line (start 171.958 104.267) (end 180.467 104.267) (angle 90) (layer Edge.Cuts) (width 0.1))
+  (gr_line (start 154.178 104.267) (end 171.958 104.267) (angle 90) (layer Edge.Cuts) (width 0.1))
+  (gr_line (start 154.432 104.521) (end 154.432 107.315) (angle 90) (layer Margin) (width 0.381))
+  (gr_line (start 154.7495 104.4702) (end 164.5285 104.4702) (angle 90) (layer Margin) (width 0.381))
 
 )
