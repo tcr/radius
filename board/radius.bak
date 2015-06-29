@@ -118,7 +118,7 @@ U 1 1 557FB4E7
 P 9350 1350
 F 0 "Y1" H 9350 1500 50  0000 C CNN
 F 1 "Crystal" H 9350 1200 50  0000 C CNN
-F 2 "Crystals:Crystal_SMD_0603_2Pads_obsolete" H 9350 1350 60  0001 C CNN
+F 2 "Crystals:Crystal_SMD_0603_4Pads" H 9350 1350 60  0001 C CNN
 F 3 "" H 9350 1350 60  0000 C CNN
 	1    9350 1350
 	0    1    1    0   
