@@ -17,19 +17,6 @@ volatile uint8_t i2c_static_value[32] = { 0 };
 volatile uint8_t i2c_static_count = 0;
 volatile uint8_t i2c_static_index = 0;
 
-volatile uint8_t buffer[17*10] = { 0 };
-
-volatile uint8_t* buffer_out = &buffer[17*0];
-volatile uint8_t* buffer_in = &buffer[17*1];
-volatile uint8_t* buffer_out_control = &buffer[17*2];
-volatile uint8_t* buffer_out_i2c = &buffer[17*3];
-volatile uint8_t* buffer_out_spi = &buffer[17*4];
-volatile uint8_t* buffer_out_uart = &buffer[17*5];
-volatile uint8_t* buffer_in_i2c = &buffer[17*6];
-volatile uint8_t* buffer_in_spi = &buffer[17*7];
-volatile uint8_t* buffer_in_uart = &buffer[17*8];
-volatile uint8_t* buffer_in_gpio = &buffer[17*9];
-
 void irq_i2c (void) __interrupt(IRQ_I2C) {
     static uint8_t Temp, Byte_Read;
 
@@ -151,34 +138,30 @@ void uart_tx (void) __interrupt(IRQ_UART1) {
 volatile uint8_t input_byte = 0;
 volatile uint8_t input_byte_count = 0;
 
-volatile uint8_t buffer_out_pos = 0;
-
 void uart_rx (void) __interrupt(IRQ_UART1_FULL) {
-    uint8_t* tmp;
+    scr_begin;
 
-    input_byte = USART1_DR;
-    buffer_out[buffer_out_pos++] = input_byte;
-
-    if (buffer_out_pos == sizeof(buffer_out) + 1) {
-        // check if overflow in control and nack or not nack?
-        /*
-        if (overflow_of_target) {
-            nack = 0;
-            buffer_out_pos = 0;
-        } else {
-        */
-
-        tmp = buffer_out_control;
-        buffer_out_control = buffer_out;
-        buffer_out = tmp;
-
-        buffer_out_pos = 0;
-        loop_state = LOOP_ACTION;
-
-        /*
+    // Wait until a leading 'R' character.
+    while (1) {
+        input_byte = USART1_DR;
+        if (input_byte != 'R') {
+            scr_return_void;
         }
-        */
+        break;
     }
+    scr_return_void;
+
+    // Read the input byte.
+    input_byte = USART1_DR;
+    scr_return_void;
+
+    // Read the count.
+    input_byte_count = USART1_DR;
+
+    // Change looping state.
+    loop_state = LOOP_ACTION;
+
+    scr_finish_void;
 }
 
 
@@ -205,7 +188,7 @@ void main (void) {
             loop_state = LOOP_SKIP;
 
             // Assume this is an I2C action.
-            i2c_read_bytes(0x1D, buffer_out[1], buffer_out[2]);
+            i2c_read_bytes(0x1D, input_byte, input_byte_count);
             while (i2c_read_byte_result()) {
                 __wait_for_interrupt();
             }
