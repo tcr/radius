@@ -1,4 +1,4 @@
-update=Monday, June 15, 2015 'PMt' 09:22:53 PM
+update=Monday, June 15, 2015 'PMt' 11:07:47 PM
 version=1
 last_client=kicad
 [pcbnew]
@@ -60,3 +60,4 @@ LibName28=atmel
 LibName29=contrib
 LibName30=valves
 LibName31=stm8
+LibName32=serial/serial_interface
