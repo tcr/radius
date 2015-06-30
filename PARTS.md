@@ -21,8 +21,13 @@ https://octopart-clicks.com/click/track?country=US&ak=6911d9b3&sig=05d4966&sid=5
 http://www.aliexpress.com/w/wholesale-stm8s.html?site=glo&SearchText=stm8s&SortType=price_asc&groupsort=1&isUnitPrice=y&initiative_id=SB_20150425124829&shipCountry=US
 http://www.st.com/web/en/resource/technical/document/application_note/CD00194637.pdf
 
+power
 http://www.digikey.com/product-search/en?FV=fff40027%2Cfff80182%2Cc00016&mnonly=0&newproducts=0&ColumnSort=1000011&page=1&stock=0&pbfree=0&rohs=0&quantity=100&ptm=0&fid=0&pageSize=25
 0.15-0.23
 
+header
 http://www.digikey.com/product-detail/en/PPTC101LGBN-RC/S5446-ND/775904
 0.58-.94
+
+crystal
+
