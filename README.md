@@ -17,6 +17,16 @@ sudo kextunload -b com.apple.driver.AppleUSBCardReader
 sudo kextunload -b com.apple.iokit.IOUSBMassStorageClass
 ```
 
+## parts
+
+Designator(s) | Quantity | Description | Part Number
+--- | --- | --- | ---
+IC1 | 1 | STM8S 8-bit micro (TSSOP-20) | [STM8S003F3P6](http://www.digikey.com/product-detail/en/STM8S003F3P6/497-11946-5-ND/2765682)
+P2 | 1 | 10-pin right-angled header, .1" Pitch | [PPTC101LGBN-RC](http://www.digikey.com/product-search/en?KeyWords=S5446-ND&WT.z_header=search_go)
+U1 | 1 | Full speed USB <-> 9-pin Serial (SOP-16) | CH340G
+U2 | 1 | 3.3V Regulator (SO-8) | [L78L33ACD13TR](http://www.digikey.com/product-detail/en/L78L33ACD13TR/497-1199-1-ND/586199)
+Y1 | 1 | 12Mhz Crystal | ...
+
 ## pin mapping
 
 * GND
