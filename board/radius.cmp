@@ -1,4 +1,4 @@
-Cmp-Mod V01 Genere par PcbNew le Sunday, July 19, 2015 'PMt' 08:33:14 PM
+Cmp-Mod V01 Genere par PcbNew le Sunday, July 19, 2015 'PMt' 09:29:11 PM
 
 BeginCmp
 TimeStamp = 55915DB8
@@ -73,14 +73,6 @@ IdModule  = SMD_Packages:SO-16-N;
 EndCmp
 
 BeginCmp
-TimeStamp = 55915E1E
-Path = /557FCB91
-Reference = U2;
-ValeurCmp = LM2931AZ-3.3/5.0;
-IdModule  = Power_Integrations:SO-8;
-EndCmp
-
-BeginCmp
 TimeStamp = 55915E26
 Path = /557FB4E7
 Reference = Y1;
@@ -94,6 +86,14 @@ Path = /55AC5BB9
 Reference = P3;
 ValeurCmp = CONN_01X04;
 IdModule  = radius:RADIUS-CONN-2MM-M-1x4;
+EndCmp
+
+BeginCmp
+TimeStamp = 55915E1E
+Path = /55AC7D39
+Reference = U2;
+ValeurCmp = LD1117;
+IdModule  = Power_Integrations:SO-8;
 EndCmp
 
 EndListe
