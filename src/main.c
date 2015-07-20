@@ -6,23 +6,24 @@
 #include "lib.h"
 #include "coroutine.h"
 
-volatile uint8_t uartstr[16] = { 0 };
-volatile uint8_t uartstr_len = 12;
-volatile uint8_t uartstr_index = 0;
+char uartstr[16] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+const uint8_t uartstr_len = 12;
+volatile uint8_t pos = 0;
 
-volatile uint8_t i2c_static_addr = 0;
-volatile uint8_t i2c_static_reg = 0;
-volatile uint8_t i2c_static_ready = 1;
-volatile uint8_t i2c_static_value[32] = { 0 };
-volatile uint8_t i2c_static_count = 0;
-volatile uint8_t i2c_static_index = 0;
+volatile uint8_t I2C_ReadByte_Result_Addr = 0;
+volatile uint8_t I2C_ReadByte_Result_Reg = 0;
+volatile uint8_t I2C_ReadByte_Result_Ready = 1;
+volatile uint8_t I2C_ReadByte_Result_Value[32] = { 0 };
+volatile size_t I2C_ReadByte_Count = 0;
+volatile size_t I2C_ReadByte_Pos = 0;
 
 void irq_i2c (void) __interrupt(IRQ_I2C) {
     static uint8_t Temp, Byte_Read;
 
     scr_begin;
 
-    while (i2c_static_ready) {
+    gpio_write(0, 1);
+    while (I2C_ReadByte_Result_Ready) {
         scr_return_void;
     }
 
@@ -32,14 +33,14 @@ void irq_i2c (void) __interrupt(IRQ_I2C) {
         scr_return_void;
     }
 
-    I2C_DR = (i2c_static_addr << 1);         //Device address
+    I2C_DR = (I2C_ReadByte_Result_Addr << 1);         //Device address
     // if ((I2C_SR1 & 0x80) == 0); //Data register empty (transmitters)
     while ((I2C_SR1 & 0x02) == 0) { //Address sent
         scr_return_void;
     }
     Temp = I2C_SR3;        //Status register
 
-    I2C_DR = i2c_static_reg;         //Device register
+    I2C_DR = I2C_ReadByte_Result_Reg;         //Device register
     while ((I2C_SR1 & 0x80) == 0) { //Data register empty (transmitters)
         scr_return_void;
     }
@@ -61,46 +62,45 @@ void irq_i2c (void) __interrupt(IRQ_I2C) {
         scr_return_void;
     }
 
-    I2C_DR = ((i2c_static_addr << 1) | 0x01);    //Device address(read)
+    I2C_DR = ((I2C_ReadByte_Result_Addr << 1) | 0x01);    //Device address(read)
+    scr_return_void;
     while ((I2C_SR1 & 0x02) == 0) { //Address sent
-     scr_return_void;
+        scr_return_void;
     }
     Temp = I2C_SR3;        //Status register
 
-    if (i2c_static_count > 1) {
-        I2C_CR2 = 0x04;        //I2C Ack Condition
-    }
-
-    while (i2c_static_count > 0) {
-        if (i2c_static_count == 1) {
-            I2C_CR2 = 0x02;        //I2C Stop Condition
+    do {
+        if (I2C_ReadByte_Count > 1) {
+            I2C_CR2 |= 0x04;        //I2C Ack Condition
+        } else {
+            I2C_CR2 |= 0x02;        //I2C Stop Condition
         }
+        scr_return_void;
 
         while ((I2C_SR1 & 0x40) == 0) { //Byte transfer finished
           scr_return_void;
         }
         // Byte_Read = 0x00;        //Clean data
-        i2c_static_value[i2c_static_index++] = I2C_DR;
+        I2C_ReadByte_Result_Value[I2C_ReadByte_Pos++] = I2C_DR;
+    } while ((--I2C_ReadByte_Count) > 0);
 
-        --i2c_static_count;
-    }
-
-    i2c_static_ready = 1;
+    I2C_ReadByte_Result_Ready = 1;
 
     scr_finish_void;
 }
 
 void i2c_read_bytes (uint8_t addr, uint8_t reg, size_t count) {
-    i2c_static_addr = addr;
-    i2c_static_reg = reg;
-    i2c_static_ready = 0;
-    i2c_static_count = count;
-    i2c_static_index = 0;
+    I2C_ReadByte_Result_Addr = addr;
+    I2C_ReadByte_Result_Reg = reg;
+    I2C_ReadByte_Count = count;
+    I2C_ReadByte_Pos = 0;
+    I2C_ReadByte_Result_Ready = 0;
+    gpio_write(0, 0);
     I2C_CR2 |= 0x01;        //I2C Start Condition
 }
 
 uint8_t i2c_read_byte_result () {
-    return i2c_static_ready ? 0 : 1;
+    return I2C_ReadByte_Result_Ready ? 0 : 1;
 }
 
 void write_chars (char* to, uint8_t val) {
@@ -110,21 +110,13 @@ void write_chars (char* to, uint8_t val) {
     to[1] = low > 0x9 ? 0x61 + (low - 0xa) : 0x30 + low;
 }
 
-typedef enum {
-    LOOP_SKIP,
-    LOOP_ACTION,
-} loopstate_t;
-
-volatile loopstate_t loop_state = LOOP_SKIP;
-
 void uart_tx (void) __interrupt(IRQ_UART1) {
     if (uart_tx_complete()) {
-        if (uartstr_index < uartstr_len) {
-            uart_write(uartstr[uartstr_index]);
-            ++uartstr_index;
+        if (pos < uartstr_len) {
+            uart_write(uartstr[pos]);
+            ++pos;
         } else {
             // UART1_CR2->TCIEN = 1;
-            gpio_write(0, 1);
             // UART1_CR2->TIEN = 0; 
             UART1_CR2->TCIEN = 0;
         }
@@ -135,32 +127,30 @@ void uart_tx (void) __interrupt(IRQ_UART1) {
     // }
 }
 
-volatile uint8_t input_byte = 0;
-volatile uint8_t input_byte_count = 0;
+volatile int doread = 0;
+volatile uint8_t rx_read = 0;
 
 void uart_rx (void) __interrupt(IRQ_UART1_FULL) {
     scr_begin;
 
-    // Wait until a leading 'R' character.
     while (1) {
-        input_byte = USART1_DR;
-        if (input_byte != 'R') {
-            scr_return_void;
+        rx_read = USART1_DR;
+        if (rx_read == 'R') {
+            break;
         }
-        break;
+        scr_return_void;
     }
-    scr_return_void;
 
-    // Read the input byte.
-    input_byte = USART1_DR;
-    scr_return_void;
+    rx_read = USART1_DR;
+    doread = 1;
 
-    // Read the count.
-    input_byte_count = USART1_DR;
+    // gpio_write(0, 1);
 
-    // Change looping state.
-    loop_state = LOOP_ACTION;
-
+    //     uart_write(uartstr[0]);
+    //     uart_write(uartstr[1]);
+    //     uart_write(uartstr[2]);
+    //     uart_write(uartstr[3]);
+    
     scr_finish_void;
 }
 
@@ -170,7 +160,16 @@ void irq_timer2 (void) __interrupt(IRQ_TIM2) {
     TIM2_SR1->UIF = 0;
 }
 
+//
+//  Main program loop.
+//
 void main (void) {
+    volatile uint8_t a;
+    uint8_t regread;
+    int32_t c;
+    int32_t f;
+    size_t i;
+
     __disable_interrupt();
     init_clock();
     init_timer2();
@@ -181,30 +180,52 @@ void main (void) {
     gpio_write(0, 0);
     __enable_interrupt();
 
+    // 
+    // uart_write('A');
     while (1) {
+
+        // uart_write(celsval);
         __wait_for_interrupt();
 
-        if (loop_state == LOOP_ACTION) {
-            loop_state = LOOP_SKIP;
+        if (doread) {
+            // looper();
+            doread = 0;
+            // uart_write(uartstr[0]);
+            // uart_write('!');
+            // gpio_write(0, gpio_read(0));
 
-            // Assume this is an I2C action.
-            i2c_read_bytes(0x1D, input_byte, input_byte_count);
+            i2c_read_bytes(0x1D, rx_read, 1);
             while (i2c_read_byte_result()) {
                 __wait_for_interrupt();
             }
 
-            // Manually copy over response.
-            uartstr[0] = 'r';
-            uartstr[1] = i2c_static_value[0];
-            uartstr[2] = i2c_static_value[1];
-            uartstr[3] = i2c_static_value[2];
-            uartstr[4] = i2c_static_value[3];
-            uartstr[5] = i2c_static_value[4];
-            uartstr[6] = i2c_static_value[5];
+            for (i=0;i<6;i++) {
+                uartstr[i] = I2C_ReadByte_Result_Value[i];    
+            }
 
-            // Restart transmission.
-            uartstr_index = 0;
-            UART1_CR2->TCIEN = 1;
+            // if (regread == 0x2A) {
+                pos = 0;
+                UART1_CR2->TCIEN = 1;
+            // }
         }
+
+        //     doread = 0;
+        //     pos = 0;
+
+
+
+            // c = ((17572 * tempraw) >> 16) - 4685;
+            // f = (1.8 * c) + 3200;
+
+            // write_chars(&uartstr[0], ((uint8_t*) &c)[3]);
+            // write_chars(&uartstr[2], ((uint8_t*) &c)[2]);
+            // write_chars(&uartstr[4], ((uint8_t*) &c)[1]);
+            // write_chars(&uartstr[6], ((uint8_t*) &c)[0]);
+        // }
+
+        // if (uart_rx_available()) {
+        //     volatile uint8_t a = USART1_DR;
+            // gpio_write(0, 1);
+        // }
     }
 }

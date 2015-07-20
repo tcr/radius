@@ -83,6 +83,27 @@ brew install sdcc
 
 http://www.colecovision.eu/stm8/128-EVAL%20Dhrystone.shtml
 
+## how it works
+
+interrupts are priority-based outputs in 64 byte packets. priority output is real time input of "uniterruptable streams", specifically i2c read (max 920Khz) and uart input (max 18400bps) simultaneously
+
+also note that i2c can stretch clock lines so really it's only uart interrupts
+
+there are many buffers, but this one is mine(d) for its outputting content. all packets block on new input until it's swapped for the outputting. so buffers must clean faster than they collectively are filled for uninterruptable streams (and acks).
+
+output from radius is asap and dumped into its buffers. simple packet id +  NACK/ACK acknowledgement byte on the usb line.
+
+ID0 + NACK/ACK
+ID1 + LEN + <=64 byte packet
+
+input? it is 64 byte packets. wait for an nack, then resend, or continue
+
+LEN + <=64 byte packet
+
+input is synced at start by waiting for an 'R' on both sides
+
+packets are USB-style repeated until a 0 length packet or < 64 length packet is received
+
 ## license
 
 MIT/ASL2
