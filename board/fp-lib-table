@@ -1,3 +1,5 @@
 (fp_lib_table
   (lib (name usbpcb)(type KiCad)(uri "$(KIPRJMOD)/usbpcb.pretty")(options "")(descr ""))
+  (lib (name conn-2mm)(type KiCad)(uri "$(KIPRJMOD)/freepcb/conn-2mm.pretty")(options "")(descr ""))
+  (lib (name radius)(type KiCad)(uri "$(KIPRJMOD)/radius.pretty")(options "")(descr ""))
 )

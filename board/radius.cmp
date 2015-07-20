@@ -1,80 +1,99 @@
-Cmp-Mod V01 Created by Cvpcb (2015-04-09 BZR 5589)-product   date = Tuesday, June 30, 2015 'AMt' 10:10:23 AM
+Cmp-Mod V01 Genere par PcbNew le Sunday, July 19, 2015 'PMt' 09:29:11 PM
 
 BeginCmp
-TimeStamp = /558B5C2A;
+TimeStamp = 55915DB8
+Path = /558B5C2A
 Reference = C1;
-ValeurCmp = 0.1 µF;
+ValeurCmp = 10 µF;
 IdModule  = Capacitors_SMD:C_0603_HandSoldering;
 EndCmp
 
 BeginCmp
-TimeStamp = /557FB37B;
+TimeStamp = 55915DBE
+Path = /557FB37B
 Reference = C2;
 ValeurCmp = 100 nF;
 IdModule  = Capacitors_SMD:C_0603_HandSoldering;
 EndCmp
 
 BeginCmp
-TimeStamp = /5592A3F7;
+TimeStamp = 55915DC4
+Path = /5592A3F7
 Reference = C3;
 ValeurCmp = 1 μF;
 IdModule  = Capacitors_SMD:C_0603_HandSoldering;
 EndCmp
 
 BeginCmp
-TimeStamp = /557FB571;
+TimeStamp = 55915DCA
+Path = /557FB571
 Reference = C4;
 ValeurCmp = 20 pF;
 IdModule  = Capacitors_SMD:C_0603_HandSoldering;
 EndCmp
 
 BeginCmp
-TimeStamp = /557FB5A3;
+TimeStamp = 55915DD0
+Path = /557FB5A3
 Reference = C5;
 ValeurCmp = 20 pF;
 IdModule  = Capacitors_SMD:C_0603_HandSoldering;
 EndCmp
 
 BeginCmp
-TimeStamp = /557FA4E7;
+TimeStamp = 55915DE8
+Path = /557FA4E7
 Reference = IC1;
 ValeurCmp = STM8S003F3P;
 IdModule  = Housings_SSOP:TSSOP-20_4.4x6.5mm_Pitch0.65mm;
 EndCmp
 
 BeginCmp
-TimeStamp = /557FD28F;
+TimeStamp = 55915DF0
+Path = /557FD28F
 Reference = P1;
 ValeurCmp = CONN_01X04;
 IdModule  = usbpcb:USB-A-PCB;
 EndCmp
 
 BeginCmp
-TimeStamp = /557FD61A;
+TimeStamp = 55915DFE
+Path = /557FD61A
 Reference = P2;
 ValeurCmp = CONN_01X10;
 IdModule  = Socket_Strips:Socket_Strip_Angled_1x10;
 EndCmp
 
 BeginCmp
-TimeStamp = /557FBDB4;
+TimeStamp = 55915E12
+Path = /557FBDB4
 Reference = U1;
 ValeurCmp = CH340G;
 IdModule  = SMD_Packages:SO-16-N;
 EndCmp
 
 BeginCmp
-TimeStamp = /557FCB91;
-Reference = U2;
-ValeurCmp = LM2931AZ-3.3/5.0;
-IdModule  = Power_Integrations:SO-8;
-EndCmp
-
-BeginCmp
-TimeStamp = /557FB4E7;
+TimeStamp = 55915E26
+Path = /557FB4E7
 Reference = Y1;
 ValeurCmp = Crystal;
 IdModule  = Crystals:Crystal_SMD_0603_4Pads;
+EndCmp
+
+BeginCmp
+TimeStamp = 55AC5DB9
+Path = /55AC5BB9
+Reference = P3;
+ValeurCmp = CONN_01X04;
+IdModule  = radius:RADIUS-CONN-2MM-M-1x4;
+EndCmp
+
+BeginCmp
+TimeStamp = 55915E1E
+Path = /55AC7D39
+Reference = U2;
+ValeurCmp = LD1117;
+IdModule  = Power_Integrations:SO-8;
 EndCmp
 
 EndListe
