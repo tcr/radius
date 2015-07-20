@@ -3,7 +3,7 @@ var concat = require('concat-stream');
 var assert = require('assert');
 
 var sp = new SerialPort(process.argv[2], {
-  baudrate: 57600
+  baudrate: 19200
 }, false); // this is the openImmediately flag [default is true]
 
 var source = 'Tessel Tag\r\n';
@@ -12,20 +12,10 @@ sp.open(function (error) {
   console.error('pipe open...');
 
   var pipe = concat(function (data) {
-    // console.log(data.toString());
-
-    // Read until first response
-    while (data[0] != 'r'.charCodeAt(0)) {
-      data = data.slice(1);
-    }
     console.log(data);
-
-    assert.equal(data[0], 'r'.charCodeAt(0));
-    assert.equal(data[1], 0x2A);
-    return;
+    // assert.equal(data[0], 0x2A);
 
     var rawData = data;
-    var scaleRange = 1;
     var out = [];
     for (var i = 0; i < 3 ; i++) {
       var gCount = (rawData[i*2] << 8) | rawData[(i*2)+1];  // Combine the two 8 bit registers into one 12-bit number
@@ -37,9 +27,8 @@ sp.open(function (error) {
         gCount = -(1 + 0xFFF - gCount); // Transform into negative 2's complement
       }
 
-      out[i] = gCount / ((1<<12)/(2*scaleRange));
+      out[i] = gCount / ((1<<12)/(2*1));
     }
-
     console.log(out);
   });
 
@@ -47,10 +36,7 @@ sp.open(function (error) {
     pipe.write(data);
   })
 
-  var WHOAMI = 0x0D;
-  var X_MSB = 0x01;
-
-  sp.write(new Buffer(['R'.charCodeAt(0), WHOAMI, 0x01]), function (err, results) {
+  sp.write(new Buffer(['R'.charCodeAt(0), 0x0D]), function (err, results) {
     console.error('err?', err, 'bytes written:', results);
 
     setTimeout(function () {
@@ -58,6 +44,6 @@ sp.open(function (error) {
       // sp.end();
       sp.close();
       pipe.end();
-    }, 250);
+    }, 300);
   });
 });
